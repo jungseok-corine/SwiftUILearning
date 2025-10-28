@@ -9,9 +9,14 @@ import SwiftUI
 
 @main
 struct SwiftUILearningApp: App {
+    @StateObject private var classifier = CoreImageClassifier()
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            NavigationStack {          // navigationTitle 쓰니 감싸주면 좋아요
+                CoreUI()
+            }
+            .environmentObject(classifier)
         }
     }
 }
