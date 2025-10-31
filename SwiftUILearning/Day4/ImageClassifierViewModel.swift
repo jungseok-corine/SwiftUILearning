@@ -15,11 +15,15 @@ class ImageClassifierViewModel {
     var selectedImage: UIImage?
     var prediction: String = "이미지를 선택하세요"
     var confidence: Double = 0.0
+    var predictionTime: Double = 0.0
     var isLoading = false
     
     func classifyImage() {
         guard let image = selectedImage else { return }
         isLoading = true
+        
+        // 시작 시간 기록
+        let startTime = Date()
         
         // 1. Core ML 모델 로드
         guard let model = try? VNCoreMLModel(for: FlowerClassifier().model) else {
@@ -30,6 +34,9 @@ class ImageClassifierViewModel {
         
         // 2. Vision Request 생성
         let request = VNCoreMLRequest(model: model) { [weak self] request, error in
+            // 경과 시간 계산
+            let elapsedTime = Date().timeIntervalSince(startTime)
+            
             guard let results = request.results as? [VNClassificationObservation],
                   let topResult = results.first else {
                 self?.prediction = "분류 실패"
@@ -40,6 +47,7 @@ class ImageClassifierViewModel {
             DispatchQueue.main.async {
                 self?.prediction = topResult.identifier
                 self?.confidence = Double(topResult.confidence)
+                self?.predictionTime = elapsedTime * 1000 // 밀리초로 변환
                 self?.isLoading = false
             }
         }

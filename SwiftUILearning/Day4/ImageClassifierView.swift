@@ -47,8 +47,14 @@ struct ImageClassifierView: View {
                             .font(.title3)
                             .foregroundStyle(.secondary)
                     }
+                } //:HSTACK
+                // 예측 시간 표시 추가
+                if viewModel.predictionTime > 0 {
+                    Text("예측 시간: \(String(format: "%.2f", viewModel.predictionTime))ms")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
-            }
+            } //:VSTACK
             .padding()
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(Color.gray.opacity(0.1))
@@ -75,7 +81,7 @@ struct ImageClassifierView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .disabled(viewModel.selectedImage == nil || viewModel.isLoading)
-            }
+            } //:VSTACK
         }
         .padding()
         .navigationTitle("이미지 분류")
